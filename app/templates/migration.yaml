@@ -1,0 +1,25 @@
+{{- if .Values.migration.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-migration
+  labels:
+    app: {{ .Release.Name }}-{{ .Chart.Name }}
+    role: migration
+  annotations:
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-delete-policy": before-hook-creation
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Chart.Name }}
+        role: migration
+    spec:
+      containers:
+      - name: migration
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        args: ["--role=migration"]
+      restartPolicy: OnFailure
+{{- end }}

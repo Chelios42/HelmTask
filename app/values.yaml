@@ -1,0 +1,19 @@
+image:
+  repository: registry/app
+  tag: "1.0.0"
+  pullPolicy: IfNotPresent
+
+app:
+  replicas: 2
+  enabled: true
+
+worker:
+  replicas: 1
+  enabled: false
+
+cronjob:
+  enabled: false
+  schedule: "* * * * *"
+
+migration:
+  enabled: true

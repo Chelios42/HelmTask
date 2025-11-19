@@ -1,0 +1,25 @@
+{{- if .Values.cronjob.enabled }}
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: {{ .Release.Name }}-{{ .Chart.Name }}-cron
+  labels:
+    app: {{ .Release.Name }}-{{ .Chart.Name }}
+    role: cronjob
+spec:
+  schedule: "{{ .Values.cronjob.schedule }}"
+  jobTemplate:
+    metadata:
+      labels:
+        app: {{ .Release.Name }}-{{ .Chart.Name }}
+        role: cronjob
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cronjob
+            image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+            imagePullPolicy: {{ .Values.image.pullPolicy }}
+            args: ["--role=cronjob"]
+          restartPolicy: OnFailure
+{{- end }}
